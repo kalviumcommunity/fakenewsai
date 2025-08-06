@@ -1,86 +1,105 @@
 Fake News Detective AI
+Fake News Detective AI is an intelligent web application that detects and explains whether a piece of news is real or fake using LLM-based text analysis and retrieval techniques. The goal is to combat misinformation and provide users with a reliable and explainable classification of any news article or statement.
+
 Project Overview
-Fake News Detective AI is an AI-powered web application that helps users verify the authenticity of news articles, headlines, or any textual content. The platform uses Google's Gemini API to analyze and classify content as real or fake. It combines intelligent prompting, structured output, function calling, and Retrieval-Augmented Generation (RAG) to deliver accurate and explainable results.
+This project uses Gemini AI (or any LLM with function-calling support), integrates MERN stack, and leverages Retrieval-Augmented Generation (RAG) to:
 
-This system is developed using the MERN stack (MongoDB, Express.js, React, Node.js), and integrates advanced AI methodologies to enhance user trust in digital news and content sources.
+Accept user-submitted news text
 
-Features
-Accepts user-submitted news content or headlines.
+Analyze its authenticity using prompting and structured output
 
-Analyzes and determines the authenticity of the content.
+Retrieve facts from trusted sources
 
-Provides confidence score and reasoning.
+Respond with an explanation and verdict ("Real" or "Fake")
 
-Uses real-time data retrieval from the web.
+Key Concepts Implemented
+1. Prompting
+Well-designed prompts are crafted to guide the LLM in detecting misinformation. Prompts focus on:
 
-Displays results in a structured and user-friendly format.
+Tone analysis (e.g., sensationalism)
 
-Key Concepts and Implementation
-Prompting
-Prompting is used to instruct the AI model (Gemini API) on how to interpret and respond to user input. We design prompts that define the model’s role as a fake news analyst and guide it to output factual, relevant responses.
+Claim extraction
+
+Reformulating queries for RAG
+
+Generating a verdict and explanation
 
 Example Prompt:
 
-css
-Copy
-Edit
-You are a fake news detection system. Given the following content, determine whether it is real or fake. Provide a short explanation and a confidence score.
-Custom prompts help maintain consistency, improve accuracy, and reduce hallucinations in the model's responses.
+Analyze the following news statement for truthfulness. State if it's true or fake. Provide the reasoning in less than 150 words.
+Statement: "{user_input}"
 
-Structured Output
-The Gemini API is prompted to return responses in a structured JSON format. This approach enables seamless integration with the frontend and backend for better readability and data processing.
-
-Example Response:
+2. Structured Output
+To ensure consistency and automation, responses follow a strict JSON schema:
 
 json
 Copy
 Edit
 {
-  "verdict": "Fake",
-  "confidence": "84%",
-  "explanation": "The content uses sensational language and lacks credible sources.",
-  "references": [
-    "https://www.snopes.com/fact-check/",
-    "https://www.politifact.com/"
-  ]
+  "verdict": "Real" | "Fake" | "Unclear",
+  "confidence": "High" | "Medium" | "Low",
+  "reason": "Explanation here"
 }
-This output structure supports efficient data storage, result rendering, and further analysis or reporting.
+This allows easy display and further logic in the frontend.
 
-Function Calling
-Function calling allows the Gemini API to trigger predefined backend functions during inference. These functions include:
+3. Function Calling
+LLMs use function calling to interact with backend tools:
 
-fetchSources(query) – to retrieve reliable external data
+Example:
 
-storeAnalysisResult(userId, query, result) – to log and store analysis
+json
+Copy
+Edit
+{
+  "function": "query_fact_database",
+  "arguments": {
+    "query": "India launches Chandrayaan-4 in 2025"
+  }
+}
+Functions include:
 
-generateSummaryReport(query) – to create downloadable reports
+Searching fact databases
 
-Function calling enables modular and extendable workflows, where AI can control backend logic based on context, improving automation and scalability.
+Fetching metadata
 
-Retrieval-Augmented Generation (RAG)
-RAG enhances the model's accuracy by retrieving real-time data from the web or a knowledge base and passing it as context to the Gemini model. The flow includes:
+Logging usage
 
-User inputs a news article or headline.
+4. RAG (Retrieval-Augmented Generation)
+To ensure factual correctness, the system:
 
-The system searches for relevant documents or fact-checks using search APIs.
+Extracts the claim
 
-Retrieved documents are injected into the Gemini prompt.
+Searches a vector DB (e.g., Pinecone) for related facts
 
-Gemini uses this context to generate a more informed and evidence-based response.
+Passes this context to the LLM
 
-This approach grounds the AI's output in verifiable data, making it more trustworthy and explainable.
+Generates a final response
 
-Final Notes
-Fake News Detective AI combines the power of generative AI with information retrieval to fight misinformation effectively. By structuring outputs, enabling backend-AI coordination through function calling, and grounding responses with real-world data using RAG, this project delivers an end-to-end AI solution that is both practical and impactful.
+Flow:
 
-Let me know if you want a downloadable version of this in .md or .txt format.
+User inputs statement
 
+Create embedding
 
+Search trusted DB
 
+Attach top-k results
 
+Generate response
 
+Tech Stack
+Frontend: React (Vite), Tailwind CSS
 
+Backend: Node.js, Express.js
 
+LLM: Gemini / OpenAI (Function calling enabled)
 
+Vector DB: Pinecone / ChromaDB
 
-Ask ChatGPT
+Database: MongoDB (for logs and feedback)
+
+Evaluation Criteria
+Criteria	Description
+Correctness	Uses structured prompts and RAG to improve factual reliability
+Efficiency	Fast responses via async calls and cache
+Scalability	Modular and optimized backend for scaling across requests and APIs
